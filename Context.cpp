@@ -9,14 +9,14 @@ Context::Context()
 {
 	triangle_count = 0;
 	this->addTriangle(new Triangle(
-		new Vertex(-0.6f, -0.4f, 0.f),
-		new Vertex(0.6f, -0.4f, 0.f),
-		new Vertex(0.f, 0.6f, 0.f)));
+		new Vertex(0.1f, -0.2f, 0.f),
+		new Vertex(0.3f, -0.2f, 0.f),
+		new Vertex(0.2f, 0.3f, 0.f)));
 
 	this->addTriangle(new Triangle(
-		new Vertex(-0.6f, -0.4f, 0.f),
-		new Vertex(0.6f, -0.4f, 0.f),
-		new Vertex(0.f, 0.6f, 0.f)));
+		new Vertex(-0.1f, -0.2f, 0.f),
+		new Vertex(-0.3f, -0.2f, 0.f),
+		new Vertex(-0.2f, 0.3f, 0.f)));
 }
 
 void Context::render(GLFWwindow* window)
@@ -58,7 +58,6 @@ void Context::render(GLFWwindow* window)
 	glBegin(GL_TRIANGLES);
 	for (int i = 0; i < triangle_count; i++)
 	{
-		printf("Render triangle %d", i);
 		triangles[i]->render(this);
 	}
 	//glColor3f(1.f, 0.f, 0.f);
