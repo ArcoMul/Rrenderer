@@ -1,5 +1,11 @@
 #include "stdafx.h"
 #include <GLFW/glfw3.h>
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include <string>
+#include <vector>
+
 #include "Context.h"
 
 #include "Vertex.h"
@@ -8,15 +14,59 @@
 Context::Context()
 {
 	triangle_count = 0;
+
+	std::vector<Vertex*> vertexes;
+	std::vector<int> faces;
+	std::string line;
+	std::ifstream myfile("../assets/test.obj");
+	if (myfile.is_open())
+	{
+		while (!myfile.eof())
+		{
+			getline(myfile, line);
+			if (line[0] == 'v')
+			{
+				std::string v, x, y, z;
+				std::istringstream iss(line);
+				iss >> v >> x >> z >> y;
+				vertexes.push_back(new Vertex(::atof(x.c_str()), ::atof(y.c_str()), ::atof(z.c_str())));
+			}
+			if (line[0] == 'f')
+			{
+				std::string v, f1, f2, f3;
+				std::istringstream iss(line);
+				iss >> v >> f1 >> f2 >> f3;
+				faces.push_back(std::stoi(f1));
+				faces.push_back(std::stoi(f2));
+				faces.push_back(std::stoi(f3));
+			}
+		}
+		myfile.close();
+	}
+	else
+	{
+		std::cout << "Unable to open file";
+	}
+
+	for (int i = 0; i < faces.size(); i += 3)
+	{
+		this->addTriangle(new Triangle(
+			vertexes[faces[i]-1],
+			vertexes[faces[i+1]-1],
+			vertexes[faces[i+2]-1]));
+	}
+
+	/*
 	this->addTriangle(new Triangle(
-		new Vertex(0.1f, -0.2f, 0.f),
-		new Vertex(0.3f, -0.2f, 0.f),
-		new Vertex(0.2f, 0.3f, 0.f)));
+		new Vertex(0.7f, 0.0f, -0.5f),
+		new Vertex(0.13f, 0.0f, 0.0f),
+		new Vertex(0.68f, 0.0f, 0.55f)));
 
 	this->addTriangle(new Triangle(
 		new Vertex(-0.1f, -0.2f, 0.f),
 		new Vertex(-0.3f, -0.2f, 0.f),
 		new Vertex(-0.2f, 0.3f, 0.f)));
+		*/
 }
 
 void Context::render(GLFWwindow* window)

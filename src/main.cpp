@@ -23,13 +23,13 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 int main()
 {
-//	std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl; // ", GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
-	//system("pause");
-
+	// Set the error callback in case of glfw errors
 	glfwSetErrorCallback(error_callback);
 
 	if (!glfwInit())
+	{
 		exit(EXIT_FAILURE);
+	}
 
 	GLFWwindow* window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
 	if (!window)
