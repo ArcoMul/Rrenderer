@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include "Renderer.h"
+
 #include <GLFW/glfw3.h>
 #include <thread>
 #include <iostream>
@@ -21,7 +23,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-int main()
+Rr::Renderer::Renderer()
 {
 	// Set the error callback in case of glfw errors
 	glfwSetErrorCallback(error_callback);
@@ -52,4 +54,9 @@ int main()
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	exit(EXIT_SUCCESS);
+}
+
+
+Rr::Renderer::~Renderer()
+{
 }
