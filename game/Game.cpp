@@ -3,11 +3,13 @@
 
 #include "stdafx.h"
 #include <Renderer.h>
+#include <Parser.h>
+#include <Context.h>
+#include <Mesh.h>
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Rr::Renderer* renderer = new Rr::Renderer();
-	if (!renderer) {
+	if (!Rr::Renderer::instance()) {
 		printf("Renderer not started");
 		return 0;
 	}
@@ -15,9 +17,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	//renderer->bindUpdate(&update);
 	//renderer->bindStart(&start);
 
-	//renderer->start();
-
-	//renderer->run();
+	Rr::Renderer::instance()->init();
+	Mesh mesh = Rr::Renderer::instance()->parser->parse("../assets/test.obj");
+	Rr::Renderer::instance()->context->addMesh(mesh);
+	Rr::Renderer::instance()->run();
 
 	return 0;
 }

@@ -6,6 +6,9 @@
 #include <iostream>
 
 #include "Context.h"
+#include "Parser.h"
+
+Rr::Renderer* Rr::Renderer::m_pInstance = NULL;
 
 void error_callback(int error, const char* description)
 {
@@ -25,6 +28,11 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 Rr::Renderer::Renderer()
 {
+	
+}
+
+void Rr::Renderer::init()
+{
 	// Set the error callback in case of glfw errors
 	glfwSetErrorCallback(error_callback);
 
@@ -33,7 +41,7 @@ Rr::Renderer::Renderer()
 		exit(EXIT_FAILURE);
 	}
 
-	GLFWwindow* window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
+	window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -44,18 +52,34 @@ Rr::Renderer::Renderer()
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-	Context* context = new Context();
+	context = new Context();
+	parser = new Parser();
+}
 
+void Rr::Renderer::run()
+{
 	while (!glfwWindowShouldClose(window))
 	{
 		context->render(window);
 	}
 
+	this->stop();
+}
+
+void Rr::Renderer::stop()
+{
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	exit(EXIT_SUCCESS);
 }
 
+Rr::Renderer* Rr::Renderer::instance()
+{
+	if (!m_pInstance)   // Only allow one instance of class to be generated.
+		m_pInstance = new Renderer;
+
+	return m_pInstance;
+}
 
 Rr::Renderer::~Renderer()
 {

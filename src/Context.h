@@ -1,20 +1,22 @@
 #pragma once
 
-class GLFWwindow;
-class Vertex;
+#include "Rrenderer.h"
+#include <vector>
+#include "Mesh.h"
+
+struct GLFWwindow;
 class Triangle;
 
-class Context
+class RRENDERER_API Context
 {
 public:
 	Context();
 	void render(GLFWwindow* window);
-	void Context::addTriangle(Triangle* triangle);
+	void addMesh(Mesh mesh);
 	void setColor();
-	void drawVertex(Vertex* vertex);
+	void drawVertex(float vertex[3]);
 	~Context();
 private:
-	int triangle_count;
-	Triangle* triangles [2];
+	std::vector<Mesh> meshes;
 };
 

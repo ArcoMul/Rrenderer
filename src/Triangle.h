@@ -1,15 +1,16 @@
 #pragma once
 
-class Vertex;
+#include "Rrenderer.h"
+
 class Context;
 
-class Triangle
+class RRENDERER_API Triangle
 {
 public:
-	Triangle(Vertex* v1, Vertex* v2, Vertex* v3);
+	Triangle(float v1[3], float v2[3], float v3[3]);
 	void render(Context* context);
 	~Triangle();
 private:
-	Vertex* vertexes [3];
+	float vertexes[3][3];
 };
 
