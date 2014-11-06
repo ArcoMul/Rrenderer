@@ -11,7 +11,7 @@ class RRENDERER_API Mesh
 public:
 	Mesh();
 	void addTriangle(Triangle triangle);
-	void render(Context* context);
+	std::vector<Triangle>* getTriangles();
 	~Mesh();
 private:
 	std::vector<Triangle> triangles;

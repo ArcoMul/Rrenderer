@@ -2,7 +2,7 @@
 
 #include "Rrenderer.h"
 
-struct GLFWwindow;
+class VideoDriver;
 class Parser;
 class Context;
 
@@ -14,12 +14,13 @@ namespace Rr
 		static Renderer* instance();
 
 		Renderer();
-		void init();
-		void run();
-		void stop();
-	    ~Renderer();
+		~Renderer();
 
-		GLFWwindow* window;
+		bool init();
+		void run();
+		void destroy();
+
+		VideoDriver* video;
 		Parser* parser;
 		Context* context;
 	private:

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Mesh.h"
 #include "Triangle.h"
 
@@ -11,12 +10,9 @@ void Mesh::addTriangle(Triangle triangle)
 	triangles.push_back(triangle);
 }
 
-void Mesh::render(Context* context)
+std::vector<Triangle>* Mesh::getTriangles()
 {
-	for (int i = 0; i < triangles.size(); i++)
-	{
-		triangles[i].render(context);
-	}
+	return &triangles;
 }
 
 Mesh::~Mesh()
