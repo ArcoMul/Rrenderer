@@ -67,6 +67,16 @@ void VideoDriver::compileShaders()
 	glewExperimental = GL_TRUE;
 	glewInit();
 
+	// get version info
+	const GLubyte* renderer = glGetString(GL_RENDERER); // get renderer string
+	const GLubyte* version = glGetString(GL_VERSION); // version as a string
+	printf("Renderer: %s\n", renderer);
+	printf("OpenGL version supported %s\n", version);
+
+	// tell GL to only draw onto a pixel if the shape is closer to the viewer
+	glEnable(GL_DEPTH_TEST); // enable depth-testing
+	glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
+
 	GLuint vs = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vs, 1, &vertexShader, NULL);
 	glCompileShader(vs);
@@ -131,9 +141,7 @@ void VideoDriver::prepareFrame()
 	// Set the viewport for the coming calls
 	glViewport(0, 0, width, height);
 
-	// Clear the bugger
-	glClear(GL_COLOR_BUFFER_BIT);
-
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(shaderProgramme);
 
 	// Set the matrix mode PROJECTION
@@ -149,39 +157,34 @@ void VideoDriver::prepareFrame()
 	// Switch to matrix mode, MODELVIEW
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-	glBegin(GL_TRIANGLES);
 }
 
 void VideoDriver::finishFrame()
 {
-	glEnd();
-
+	// put the stuff we've been drawing onto the display
 	glfwSwapBuffers(window);
+
+	// update other events like input handling 
 	glfwPollEvents();
+}
+
+void VideoDriver::bufferVertexes(GLuint* vbo, GLuint* vao, int n, float points[])
+{
+	glGenBuffers(1, vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
+	glBufferData(GL_ARRAY_BUFFER, n * sizeof(float), points, GL_STATIC_DRAW);
+
+	glGenVertexArrays(1, vao);
+	glBindVertexArray(*vao);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
 void VideoDriver::renderMesh(Mesh* mesh)
 {
-	std::vector<Triangle>* triangles = mesh->getTriangles();
-	for (int i = 0; i < triangles->size(); i++)
-	{
-		setColor();
-		float* vertexes = triangles->at(i).getVertexes();
-		drawVertex(vertexes + 0 * 3);
-		drawVertex(vertexes + 1 * 3);
-		drawVertex(vertexes + 2 * 3);
-	}
-}
-
-void VideoDriver::setColor()
-{
-	glColor3f(1.f, 0.f, 0.f);
-}
-
-void VideoDriver::drawVertex(float* vertex)
-{
-	glVertex3f(*vertex, *(vertex + 1), *(vertex + 2));
+	glBindVertexArray(mesh->getVAO());
+	glDrawArrays(GL_TRIANGLES, 0, mesh->getPointCount());
 }
 
 VideoDriver::~VideoDriver()

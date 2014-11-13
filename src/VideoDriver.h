@@ -25,9 +25,8 @@ public:
 
 	void prepareFrame();
 	void finishFrame();
+	void bufferVertexes(GLuint* vbo, GLuint* vao, int n, float points[]);
 	void renderMesh(Mesh* mesh);
-	void setColor();
-	void drawVertex(float* vertex);
 private:
 	GLFWwindow* window;
 	GLuint shaderProgramme;
