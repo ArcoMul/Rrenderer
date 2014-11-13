@@ -1,9 +1,5 @@
 #include "Renderer.h"
 
-#include <GLFW/glfw3.h>
-#include <thread>
-#include <iostream>
-
 #include "VideoDriver.h"
 #include "Context.h"
 #include "Parser.h"

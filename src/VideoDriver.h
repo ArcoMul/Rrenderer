@@ -1,5 +1,6 @@
 #pragma once
 
+#include <GL/glew.h>
 #include "Rrenderer.h"
 
 class GLFWwindow;
@@ -17,6 +18,11 @@ public:
 	double getTime();
 	bool windowShouldClose();
 
+	void setVertexShader(const char* shader);
+	void setFragmentShader(const char* shader);
+	void compileShaders();
+	void debugShader(GLuint object);
+
 	void prepareFrame();
 	void finishFrame();
 	void renderMesh(Mesh* mesh);
@@ -24,5 +30,8 @@ public:
 	void drawVertex(float* vertex);
 private:
 	GLFWwindow* window;
+	GLuint shaderProgramme;
+	const char* vertexShader;
+	const char* fragmentShader;
 };
 
