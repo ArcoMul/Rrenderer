@@ -83,21 +83,19 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Context.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="VideoDriver.cpp" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="Context.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Rrenderer.h" />
-    <ClInclude Include="Triangle.h" />
     <ClInclude Include="VideoDriver.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Context.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Parser.cpp" />
-    <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="Triangle.cpp" />
-    <ClCompile Include="VideoDriver.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

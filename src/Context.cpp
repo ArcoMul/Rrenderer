@@ -1,7 +1,6 @@
 #include "Renderer.h"
 #include "Context.h"
 #include "VideoDriver.h"
-#include "Triangle.h"
 
 Context::Context()
 {

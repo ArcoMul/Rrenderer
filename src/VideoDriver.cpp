@@ -2,7 +2,6 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 #include "Mesh.h"
-#include "Triangle.h"
 
 void error_callback(int error, const char* description)
 {
@@ -77,6 +76,9 @@ void VideoDriver::compileShaders()
 	glEnable(GL_DEPTH_TEST); // enable depth-testing
 	glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
 
+	glGenVertexArrays(1, &this->vao);
+	glBindVertexArray(this->vao);
+
 	GLuint vs = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vs, 1, &vertexShader, NULL);
 	glCompileShader(vs);
@@ -87,9 +89,13 @@ void VideoDriver::compileShaders()
 	shaderProgramme = glCreateProgram();
 	glAttachShader(shaderProgramme, fs);
 	glAttachShader(shaderProgramme, vs);
+
 	glLinkProgram(shaderProgramme);
 
 	debugShader(shaderProgramme);
+
+	// 'Use' shader program for the Uniforms which will be set later
+	glUseProgram(shaderProgramme);
 }
 
 void VideoDriver::debugShader(GLuint object)
@@ -172,23 +178,66 @@ void VideoDriver::bufferVertexes(GLuint* vbo, GLuint* vao, int n, float points[]
 {
 	glGenBuffers(1, vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
-	glBufferData(GL_ARRAY_BUFFER, n * sizeof(float), points, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, n * sizeof(GLfloat), points, GL_STATIC_DRAW);
 
-	glGenVertexArrays(1, vao);
-	glBindVertexArray(*vao);
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glVertexAttribPointer(
+		0,			// attribute
+		3,			// size
+		GL_FLOAT,	// type
+		GL_FALSE,	// normalized?
+		0,			// stride
+		NULL		// array buffer offset
+		);
+}
+
+void VideoDriver::bufferNormals(GLuint* nbo, GLuint* vao, int n, float normals[])
+{
+	glGenBuffers(1, nbo);
+	glBindBuffer(GL_ARRAY_BUFFER, *nbo);
+	glBufferData(GL_ARRAY_BUFFER, n * sizeof(GLfloat), normals, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, *nbo);
+	glVertexAttribPointer(
+		1,			// attribute
+		3,			// size
+		GL_FLOAT,	// type
+		GL_FALSE,	// normalized?
+		0,			// stride
+		NULL		// array buffer offset
+		);
 }
 
 void VideoDriver::renderMesh(Mesh* mesh)
 {
-	glBindVertexArray(mesh->getVAO());
 	glDrawArrays(GL_TRIANGLES, 0, mesh->getPointCount());
+}
+
+void VideoDriver::setUniform4f(char* name, float v1, float v2, float v3, float v4)
+{
+	GLuint id = glGetUniformLocation(shaderProgramme, name);
+	glUniform4f(id, v1, v2, v3, v4);
+}
+
+void VideoDriver::setUniform3f(char* name, float v1, float v2, float v3)
+{
+	GLuint id = glGetUniformLocation(shaderProgramme, name);
+	glUniform3f(id, v1, v2, v3);
+}
+
+void VideoDriver::setUniform1f(char* name, float v1)
+{
+	GLuint id = glGetUniformLocation(shaderProgramme, name);
+	glUniform1f(id, v1);
 }
 
 VideoDriver::~VideoDriver()
 {
+	// TODO: un-buffer
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }
