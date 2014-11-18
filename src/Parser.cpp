@@ -10,11 +10,11 @@
 #include "Parser.h"
 #include "Mesh.h"
 
-Parser::Parser()
+Rr::Parser::Parser()
 {
 }
 
-Mesh Parser::parse(std::string file)
+Rr::Mesh Rr::Parser::parse(std::string file)
 {
 	std::vector<float> _points;
 	std::vector<float> _normals;
@@ -102,6 +102,6 @@ Mesh Parser::parse(std::string file)
 	return mesh;
 }
 
-Parser::~Parser()
+Rr::Parser::~Parser()
 {
 }

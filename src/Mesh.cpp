@@ -3,38 +3,29 @@
 #include "VideoDriver.h"
 #include <GLFW/glfw3.h>
 
-Mesh::Mesh()
+Rr::Mesh::Mesh()
 {
+	Rr::Renderer::instance()->video->generateVertexArray(&this->vao);
 }
 
-void Mesh::setPoints(std::vector<float> points)
+void Rr::Mesh::setPoints(std::vector<float> points)
 {
 	this->points = points;
 	Rr::Renderer::instance()->video->bufferVertexes(&vbo, &vao, points.size(), &points[0]);
 }
 
-void Mesh::setNormals(std::vector<float> normals)
+void Rr::Mesh::setNormals(std::vector<float> normals)
 {
 	this->normals = normals;
 	Rr::Renderer::instance()->video->bufferNormals(&nbo, &vao, normals.size(), &normals[0]);
 }
 
-void Mesh::buffer()
-{
-	Rr::Renderer::instance()->video->bufferVertexes(&vbo, &vao, points.size(), &points[0]);
-	Rr::Renderer::instance()->video->bufferNormals(&nbo, &vao, normals.size(), &normals[0]);
-}
-
-GLuint Mesh::getVAO()
-{
-	return this->vao;
-}
-
-int Mesh::getPointCount()
+int Rr::Mesh::getPointCount()
 {
 	return points.size();
 }
 
-Mesh::~Mesh()
+Rr::Mesh::~Mesh()
 {
+
 }

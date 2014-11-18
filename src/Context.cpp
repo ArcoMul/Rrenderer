@@ -2,24 +2,24 @@
 #include "Context.h"
 #include "VideoDriver.h"
 
-Context::Context()
+Rr::Context::Context()
 {
 	video = Rr::Renderer::instance()->video;
 }
 
-void Context::render()
+void Rr::Context::render()
 {
-	for (int i = 0; i < meshes.size(); i++)
+	for (int i = 0; i < objects.size(); i++)
 	{
-		video->renderMesh(&meshes[i]);
+		video->renderObject(&objects[i]);
 	}
 }
 
-void Context::addMesh(Mesh mesh)
+void Rr::Context::addObject(Object object)
 {
-	meshes.push_back(mesh);
+	objects.push_back(object);
 }
 
-Context::~Context()
+Rr::Context::~Context()
 {
 }

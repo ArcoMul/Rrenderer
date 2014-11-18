@@ -2,12 +2,12 @@
 
 #include "Rrenderer.h"
 
-class VideoDriver;
-class Parser;
-class Context;
-
 namespace Rr
 {
+	class VideoDriver;
+	class Parser;
+	class Context;
+
 	class RRENDERER_API Renderer
 	{
 	public:

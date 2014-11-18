@@ -1,6 +1,7 @@
 #include "VideoDriver.h"
 #include <GLFW/glfw3.h>
 #include <vector>
+#include "Object.h"
 #include "Mesh.h"
 
 void error_callback(int error, const char* description)
@@ -19,12 +20,12 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-VideoDriver::VideoDriver()
+Rr::VideoDriver::VideoDriver()
 {
 	
 }
 
-bool VideoDriver::init()
+bool Rr::VideoDriver::init()
 {
 	// Set the error callback in case of glfw errors
 	glfwSetErrorCallback(error_callback);
@@ -37,7 +38,7 @@ bool VideoDriver::init()
 	return true;
 }
 
-bool VideoDriver::createWindow(int x, int y, char* title)
+bool Rr::VideoDriver::createWindow(int x, int y, char* title)
 {
 	window = glfwCreateWindow(x, y, title, NULL, NULL);
 	if (!window)
@@ -48,20 +49,7 @@ bool VideoDriver::createWindow(int x, int y, char* title)
 	glfwMakeContextCurrent(window);
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-}
 
-void VideoDriver::setVertexShader(const char* shader)
-{
-	this->vertexShader = shader;
-}
-
-void VideoDriver::setFragmentShader(const char* shader)
-{
-	this->fragmentShader = shader;
-}
-
-void VideoDriver::compileShaders()
-{
 	// start GLEW extension handler
 	glewExperimental = GL_TRUE;
 	glewInit();
@@ -76,29 +64,18 @@ void VideoDriver::compileShaders()
 	glEnable(GL_DEPTH_TEST); // enable depth-testing
 	glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
 
-	glGenVertexArrays(1, &this->vao);
-	glBindVertexArray(this->vao);
-
-	GLuint vs = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vs, 1, &vertexShader, NULL);
-	glCompileShader(vs);
-	GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fs, 1, &fragmentShader, NULL);
-	glCompileShader(fs);
-
 	shaderProgramme = glCreateProgram();
-	glAttachShader(shaderProgramme, fs);
-	glAttachShader(shaderProgramme, vs);
-
-	glLinkProgram(shaderProgramme);
-
-	debugShader(shaderProgramme);
-
-	// 'Use' shader program for the Uniforms which will be set later
-	glUseProgram(shaderProgramme);
 }
 
-void VideoDriver::debugShader(GLuint object)
+GLuint Rr::VideoDriver::createAndCompileShader(GLuint type, char* source)
+{
+	GLuint shader = glCreateShader(type);
+	glShaderSource(shader, 1, &source, NULL);
+	glCompileShader(shader);
+	return shader;
+}
+
+void Rr::VideoDriver::debugShader(GLuint object)
 {
 	GLint log_length = 0;
 	if (glIsShader(object))
@@ -121,22 +98,22 @@ void VideoDriver::debugShader(GLuint object)
 	free(log);
 }
 
-GLFWwindow* VideoDriver::getWindow()
+GLFWwindow* Rr::VideoDriver::getWindow()
 {
 	return window;
 }
 
-double VideoDriver::getTime()
+double Rr::VideoDriver::getTime()
 {
 	return glfwGetTime();
 }
 
-bool VideoDriver::windowShouldClose()
+bool Rr::VideoDriver::windowShouldClose()
 {
 	return glfwWindowShouldClose(window);
 }
 
-void VideoDriver::prepareFrame()
+void Rr::VideoDriver::prepareFrame()
 {
 	// Get the size of the window / buffer
 	float ratio;
@@ -165,7 +142,7 @@ void VideoDriver::prepareFrame()
 	glLoadIdentity();
 }
 
-void VideoDriver::finishFrame()
+void Rr::VideoDriver::finishFrame()
 {
 	// put the stuff we've been drawing onto the display
 	glfwSwapBuffers(window);
@@ -174,70 +151,92 @@ void VideoDriver::finishFrame()
 	glfwPollEvents();
 }
 
-void VideoDriver::bufferVertexes(GLuint* vbo, GLuint* vao, int n, float points[])
+void Rr::VideoDriver::generateVertexArray(GLuint* vao)
+{
+	glGenVertexArrays(1, vao);
+}
+
+void Rr::VideoDriver::bufferVertexes(GLuint* vbo, GLuint* vao, int n, float points[])
 {
 	glGenBuffers(1, vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
 	glBufferData(GL_ARRAY_BUFFER, n * sizeof(GLfloat), points, GL_STATIC_DRAW);
 
+	glBindVertexArray(*vao);
+
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
-	glVertexAttribPointer(
-		0,			// attribute
-		3,			// size
-		GL_FLOAT,	// type
-		GL_FALSE,	// normalized?
-		0,			// stride
-		NULL		// array buffer offset
-		);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
-void VideoDriver::bufferNormals(GLuint* nbo, GLuint* vao, int n, float normals[])
+void Rr::VideoDriver::bufferNormals(GLuint* nbo, GLuint* vao, int n, float normals[])
 {
 	glGenBuffers(1, nbo);
 	glBindBuffer(GL_ARRAY_BUFFER, *nbo);
 	glBufferData(GL_ARRAY_BUFFER, n * sizeof(GLfloat), normals, GL_STATIC_DRAW);
 
+	glBindVertexArray(*vao);
+
 	glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, *nbo);
-	glVertexAttribPointer(
-		1,			// attribute
-		3,			// size
-		GL_FLOAT,	// type
-		GL_FALSE,	// normalized?
-		0,			// stride
-		NULL		// array buffer offset
-		);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
-void VideoDriver::renderMesh(Mesh* mesh)
+void Rr::VideoDriver::renderObject(Object* object)
 {
-	glDrawArrays(GL_TRIANGLES, 0, mesh->getPointCount());
+	// Attach the shaders we want to use
+	glAttachShader(shaderProgramme, *object->getMaterial()->getVertexShader());
+	glAttachShader(shaderProgramme, *object->getMaterial()->getFragmentShader());
+
+	// Tell which vertex array to render
+	glBindVertexArray(object->getMesh()->vao);
+
+	// Link the uniforms to the programme
+	glLinkProgram(shaderProgramme);
+
+	// Tell which programme to use
+	glUseProgram(shaderProgramme);
+
+	setUniform4f("ObjectColor", object->getMaterial()->getDiffuse().r() / 255.f, object->getMaterial()->getDiffuse().g() / 255.f, object->getMaterial()->getDiffuse().b() / 255.f, object->getMaterial()->getDiffuse().a() / 255.f);
+	setUniform3f("Ambient", .5, .5, .5);
+	setUniform3f("LightColor", .5, .5, .5);
+	setUniform3f("LightDirection", 0., 0., -1.);
+	setUniform3f("HalfVector", 0., 0., 0.);
+	setUniform1f("Shininess", 0.5);
+	setUniform1f("Strength", 0.5);
+
+	// Check if there are any errors
+	debugShader(shaderProgramme);
+
+	// Draw!
+	glDrawArrays(GL_TRIANGLES, 0, object->getMesh()->getPointCount());
+
+	// Detach the shaders from the programm
+	glDetachShader(shaderProgramme, *object->getMaterial()->getVertexShader());
+	glDetachShader(shaderProgramme, *object->getMaterial()->getFragmentShader());
 }
 
-void VideoDriver::setUniform4f(char* name, float v1, float v2, float v3, float v4)
+void Rr::VideoDriver::setUniform4f(char* name, float v1, float v2, float v3, float v4)
 {
 	GLuint id = glGetUniformLocation(shaderProgramme, name);
 	glUniform4f(id, v1, v2, v3, v4);
 }
 
-void VideoDriver::setUniform3f(char* name, float v1, float v2, float v3)
+void Rr::VideoDriver::setUniform3f(char* name, float v1, float v2, float v3)
 {
 	GLuint id = glGetUniformLocation(shaderProgramme, name);
 	glUniform3f(id, v1, v2, v3);
 }
 
-void VideoDriver::setUniform1f(char* name, float v1)
+void Rr::VideoDriver::setUniform1f(char* name, float v1)
 {
 	GLuint id = glGetUniformLocation(shaderProgramme, name);
 	glUniform1f(id, v1);
 }
 
-VideoDriver::~VideoDriver()
+Rr::VideoDriver::~VideoDriver()
 {
 	// TODO: un-buffer
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }
