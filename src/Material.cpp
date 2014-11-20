@@ -6,9 +6,9 @@ Rr::Material::Material()
 {
 	setVertexShader(
 		"#version 330 core\n"
-		// "uniform mat4 MVPMatrix;"
-		// "uniform mat3 NormalMatrix;" // to transform normals, pre-perspective
-		// "in vec4 VertexColor;"
+		//TODO: "uniform mat4 MVPMatrix;"
+		//TODO: "uniform mat3 NormalMatrix;" // to transform normals, pre-perspective
+		//TODO: "in vec4 VertexColor;"
 		"layout(location = 0) in vec4 VertexPosition;"
 		"layout(location = 1) in vec3 VertexNormal;"
 		"uniform vec4 ObjectColor;"
@@ -18,8 +18,8 @@ Rr::Material::Material()
 		"{"
 			"Color = ObjectColor;"
 			// transform the normal, without perspective, and normalize it
-			// "Normal = normalize(NormalMatrix * VertexNormal);"
-			// "gl_Position = MVPMatrix * VertexPosition;"
+			//TODO: "Normal = normalize(NormalMatrix * VertexNormal);"
+			//TODO: "gl_Position = MVPMatrix * VertexPosition;"
 			"Normal = VertexNormal;"
 			"gl_Position = VertexPosition;"
 		"}"
@@ -45,9 +45,9 @@ Rr::Material::Material()
 			// surfaces facing away from the light (negative dot products)
 			// won’t be lit by the directional light
 			"if (diffuse == 0.0) {"
-			"specular = 0.0;"
+				"specular = 0.0;"
 			"} else {"
-			"specular = pow(specular, Shininess);" // sharpen the highlight
+				"specular = pow(specular, Shininess);" // sharpen the highlight
 			"}"
 			"vec3 scatteredLight = Ambient + LightColor * diffuse;"
 			"vec3 reflectedLight = LightColor * specular * Strength;"
@@ -60,24 +60,24 @@ Rr::Material::Material()
 	);
 }
 
-
 Rr::Material::~Material()
 {
 }
 
-void Rr::Material::setDiffuse(Color color)
+void Rr::Material::setBaseColor(Color color)
 {
-	diffuse = color;
+	this->baseColor = color;
 }
 
-void Rr::Material::setSpecular(Color color)
+void Rr::Material::setSpecular(float strength, Color color)
 {
-	specular = color;
+	this->specularStrength = strength;
+	this->specularColor = color;
 }
 
-void Rr::Material::setShininess(float value)
+void Rr::Material::setAmbient(float strength)
 {
-	shininess = value;
+	this->ambientStrength = strength;
 }
 
 void Rr::Material::setVertexShader(char* source)
@@ -90,6 +90,26 @@ void Rr::Material::setFragmentShader(char* source)
 	fragmentShader = Rr::Renderer::instance()->video->createAndCompileShader(GL_FRAGMENT_SHADER, source);
 }
 
+Rr::Color Rr::Material::getBaseColor()
+{
+	return baseColor;
+}
+
+Rr::Color Rr::Material::getSpecularColor()
+{
+	return specularColor;
+}
+
+float Rr::Material::getSpecularStrength()
+{
+	return specularStrength;
+}
+
+float Rr::Material::getAmbient()
+{
+	return ambientStrength;
+}
+
 GLuint* Rr::Material::getVertexShader()
 {
 	return &vertexShader;
@@ -98,10 +118,4 @@ GLuint* Rr::Material::getVertexShader()
 GLuint* Rr::Material::getFragmentShader()
 {
 	return &fragmentShader;
-}
-
-
-Rr::Color Rr::Material::getDiffuse()
-{
-	return diffuse;
 }

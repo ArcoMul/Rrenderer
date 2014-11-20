@@ -50,17 +50,17 @@ bool Rr::VideoDriver::createWindow(int x, int y, char* title)
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-	// start GLEW extension handler
+	// Start GLEW extension handler
 	glewExperimental = GL_TRUE;
 	glewInit();
 
-	// get version info
+	// Get version info
 	const GLubyte* renderer = glGetString(GL_RENDERER); // get renderer string
 	const GLubyte* version = glGetString(GL_VERSION); // version as a string
 	printf("Renderer: %s\n", renderer);
 	printf("OpenGL version supported %s\n", version);
 
-	// tell GL to only draw onto a pixel if the shape is closer to the viewer
+	// Tell OpenGL to only draw onto a pixel if the shape is closer to the viewer
 	glEnable(GL_DEPTH_TEST); // enable depth-testing
 	glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
 
@@ -69,9 +69,13 @@ bool Rr::VideoDriver::createWindow(int x, int y, char* title)
 
 GLuint Rr::VideoDriver::createAndCompileShader(GLuint type, char* source)
 {
+	// Create a new shader object
 	GLuint shader = glCreateShader(type);
+	// Set the source code of the shader
 	glShaderSource(shader, 1, &source, NULL);
+	// Compile the source code to a shader object
 	glCompileShader(shader);
+
 	return shader;
 }
 
@@ -124,62 +128,24 @@ void Rr::VideoDriver::prepareFrame()
 	// Set the viewport for the coming calls
 	glViewport(0, 0, width, height);
 
+	// Clear the current view
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glUseProgram(shaderProgramme);
 
-	// Set the matrix mode PROJECTION
+	// The following calls affect the protection matrix
 	glMatrixMode(GL_PROJECTION);
 
-	// Replace the current matrix with the identity matrix
+	// Set the identity matrix as the current (projection) matrix
 	glLoadIdentity();
 
 	// Multiply the current matrix with an orthographic matrix
-	// TODO: what does this line do?
+	// TODO: I don't really understand what this does
 	glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
 
-	// Switch to matrix mode, MODELVIEW
+	// The coming calls affect the modelview matrix
 	glMatrixMode(GL_MODELVIEW);
+
+	// Set the identity matrix as the current (modelview) matrix
 	glLoadIdentity();
-}
-
-void Rr::VideoDriver::finishFrame()
-{
-	// put the stuff we've been drawing onto the display
-	glfwSwapBuffers(window);
-
-	// update other events like input handling 
-	glfwPollEvents();
-}
-
-void Rr::VideoDriver::generateVertexArray(GLuint* vao)
-{
-	glGenVertexArrays(1, vao);
-}
-
-void Rr::VideoDriver::bufferVertexes(GLuint* vbo, GLuint* vao, int n, float points[])
-{
-	glGenBuffers(1, vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
-	glBufferData(GL_ARRAY_BUFFER, n * sizeof(GLfloat), points, GL_STATIC_DRAW);
-
-	glBindVertexArray(*vao);
-
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-}
-
-void Rr::VideoDriver::bufferNormals(GLuint* nbo, GLuint* vao, int n, float normals[])
-{
-	glGenBuffers(1, nbo);
-	glBindBuffer(GL_ARRAY_BUFFER, *nbo);
-	glBufferData(GL_ARRAY_BUFFER, n * sizeof(GLfloat), normals, GL_STATIC_DRAW);
-
-	glBindVertexArray(*vao);
-
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, *nbo);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
 void Rr::VideoDriver::renderObject(Object* object)
@@ -197,13 +163,14 @@ void Rr::VideoDriver::renderObject(Object* object)
 	// Tell which programme to use
 	glUseProgram(shaderProgramme);
 
-	setUniform4f("ObjectColor", object->getMaterial()->getDiffuse().r() / 255.f, object->getMaterial()->getDiffuse().g() / 255.f, object->getMaterial()->getDiffuse().b() / 255.f, object->getMaterial()->getDiffuse().a() / 255.f);
-	setUniform3f("Ambient", .5, .5, .5);
-	setUniform3f("LightColor", .5, .5, .5);
-	setUniform3f("LightDirection", 0., 0., -1.);
+	setUniform4f("ObjectColor", object->getMaterial()->getBaseColor().r() / 255.f, object->getMaterial()->getBaseColor().g() / 255.f, object->getMaterial()->getBaseColor().b() / 255.f, 1);
+	setUniform3f("Ambient", object->getMaterial()->getAmbient(), object->getMaterial()->getAmbient(), object->getMaterial()->getAmbient());
+	setUniform3f("LightColor", object->getMaterial()->getSpecularColor().r() / 255.f, object->getMaterial()->getSpecularColor().g() / 255.f, object->getMaterial()->getSpecularColor().b() / 255.f);
+	setUniform1f("Shininess", object->getMaterial()->getSpecularStrength());
+	setUniform1f("Strength", object->getMaterial()->getSpecularStrength());
+
 	setUniform3f("HalfVector", 0., 0., 0.);
-	setUniform1f("Shininess", 0.5);
-	setUniform1f("Strength", 0.5);
+	setUniform3f("LightDirection", 0., 0., -1.);
 
 	// Check if there are any errors
 	debugShader(shaderProgramme);
@@ -214,6 +181,56 @@ void Rr::VideoDriver::renderObject(Object* object)
 	// Detach the shaders from the programm
 	glDetachShader(shaderProgramme, *object->getMaterial()->getVertexShader());
 	glDetachShader(shaderProgramme, *object->getMaterial()->getFragmentShader());
+}
+
+void Rr::VideoDriver::finishFrame()
+{
+	// Put the stuff we've been drawing onto the display
+	glfwSwapBuffers(window);
+
+	// Update other events like input handling 
+	glfwPollEvents();
+}
+
+
+void Rr::VideoDriver::generateVertexArray(GLuint* vao)
+{
+	glGenVertexArrays(1, vao);
+}
+
+void Rr::VideoDriver::bufferVertexes(GLuint* vbo, GLuint* vao, int n, float points[])
+{
+	// Buffer the points
+	glGenBuffers(1, vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
+	glBufferData(GL_ARRAY_BUFFER, n * sizeof(GLfloat), points, GL_STATIC_DRAW);
+
+	glBindVertexArray(*vao);
+
+	// Bind the buffer to the vertex array of the object
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+}
+
+void Rr::VideoDriver::bufferNormals(GLuint* nbo, GLuint* vao, int n, float normals[])
+{
+	// Buffer the normals
+	glGenBuffers(1, nbo);
+	glBindBuffer(GL_ARRAY_BUFFER, *nbo);
+	glBufferData(GL_ARRAY_BUFFER, n * sizeof(GLfloat), normals, GL_STATIC_DRAW);
+
+	glBindVertexArray(*vao);
+
+	// Bind the buffer to the vertex array of the object
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, *nbo);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+}
+
+void deleteBuffer(GLuint* buffer)
+{
+	glDeleteBuffers(1, buffer);
 }
 
 void Rr::VideoDriver::setUniform4f(char* name, float v1, float v2, float v3, float v4)
@@ -236,7 +253,6 @@ void Rr::VideoDriver::setUniform1f(char* name, float v1)
 
 Rr::VideoDriver::~VideoDriver()
 {
-	// TODO: un-buffer
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }

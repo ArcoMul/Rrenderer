@@ -19,7 +19,7 @@ bool Rr::Renderer::init()
 	context = new Context();
 	parser = new Parser();
 
-	return 1;
+	return true;
 }
 
 void Rr::Renderer::run()

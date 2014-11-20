@@ -27,5 +27,7 @@ int Rr::Mesh::getPointCount()
 
 Rr::Mesh::~Mesh()
 {
-
+	Rr::Renderer::instance()->video->deleteBuffer(&vbo);
+	Rr::Renderer::instance()->video->deleteBuffer(&nbo);
+	Rr::Renderer::instance()->video->deleteBuffer(&vao);
 }

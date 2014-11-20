@@ -31,9 +31,9 @@ int main(int argc, char* argv[])
 
 	// Create the ball material
 	Rr::Material ballMaterial = Rr::Material();
-	ballMaterial.setDiffuse(Rr::Color(0, 125, 255, 255));
-	ballMaterial.setSpecular(Rr::Color(.8, .8, .8, 1.));
-	ballMaterial.setShininess(0.5);
+	ballMaterial.setBaseColor(Rr::Color(0, 125, 255));
+	ballMaterial.setAmbient(0.3);
+	ballMaterial.setSpecular(1, Rr::Color(200, 200, 200));
 
 	// Create the ball object and link the mesh and material on it
 	Rr::Object ball;
@@ -48,9 +48,9 @@ int main(int argc, char* argv[])
 
 	// Create the monkey material
 	Rr::Material monkeyMaterial = Rr::Material();
-	monkeyMaterial.setDiffuse(Rr::Color(255, 125, 0, 255));
-	monkeyMaterial.setSpecular(Rr::Color(.8, .8, .8, 1.));
-	monkeyMaterial.setShininess(0.5);
+	monkeyMaterial.setBaseColor(Rr::Color(255, 125, 0));
+	monkeyMaterial.setAmbient(0.2);
+	monkeyMaterial.setSpecular(1, Rr::Color(200, 200, 200));
 
 	// Create the monkey object and link the mesh and material on it
 	Rr::Object monkey;

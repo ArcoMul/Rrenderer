@@ -12,11 +12,19 @@ namespace Rr
 	{
 	public:
 		Context();
-		void render();
-		void addObject(Object object);
 		~Context();
+
+		// Renders all the objects in this context
+		void render();
+
+		// Adds a new object to this context
+		void addObject(Object object);
+
 	private:
+		// Reference to the video driver, since it is used a lot
 		VideoDriver* video;
+
+		// The objects to be rendered in this context
 		std::vector<Object> objects;
 	};
 }

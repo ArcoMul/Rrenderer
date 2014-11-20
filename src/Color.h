@@ -5,12 +5,12 @@
 namespace Rr
 {
 	union ColorU {
-		// first representation (member of union) 
+		// Color as integers
 		struct asRGBA {
 			unsigned char a, b, g, r;
 		} asRGBA;
 
-		// second representation (member of union) 
+		// Color as hexadecimal
 		unsigned int asInt;
 	};
 
@@ -22,6 +22,9 @@ namespace Rr
 		}
 		Color(int r, int g, int b, int a) {
 			setRgba(r, g, b, a);
+		}
+		Color(int r, int g, int b) {
+			setRgba(r, g, b, 1);
 		}
 		void setRgba(int r, int g, int b, int a) {
 			this->r(r);

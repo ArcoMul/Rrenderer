@@ -11,7 +11,9 @@ namespace Rr
 	{
 	public:
 		Parser();
-		Mesh parse(std::string file);
 		~Parser();
+
+		// Parses a .obj file to a corresponding Mesh
+		Mesh parse(std::string file);
 	};
 }

@@ -14,18 +14,35 @@ Rr::Parser::Parser()
 {
 }
 
+Rr::Parser::~Parser()
+{
+}
+
 Rr::Mesh Rr::Parser::parse(std::string file)
 {
+	// Points substracted from the .obj file
 	std::vector<float> _points;
+
+	// Normals substracted from the .obj file
 	std::vector<float> _normals;
+
+	// Faces substracted from the .obj file
 	std::vector<std::string> faces;
+
+	// The line which is getting read now
 	std::string line;
-	std::ifstream myfile(file);
-	if (myfile.is_open())
+
+	// The file
+	std::ifstream objfile(file);
+
+	if (objfile.is_open())
 	{
-		while (!myfile.eof())
+		// As long as we don't reach the end of the file we read every line
+		while (!objfile.eof())
 		{
-			getline(myfile, line);
+			getline(objfile, line);
+
+			// It's a vertex
 			if (line[0] == 'v')
 			{
 				std::string v, x, y, z;
@@ -35,6 +52,8 @@ Rr::Mesh Rr::Parser::parse(std::string file)
 				_points.push_back(::atof(y.c_str()));
 				_points.push_back(::atof(z.c_str()));
 			}
+
+			// It's a vertex normal
 			if (line[0] == 'v' && line[1] == 'n')
 			{
 				std::string v, x, y, z;
@@ -44,6 +63,8 @@ Rr::Mesh Rr::Parser::parse(std::string file)
 				_normals.push_back(::atof(y.c_str()));
 				_normals.push_back(::atof(z.c_str()));
 			}
+
+			// It's a face
 			if (line[0] == 'f')
 			{
 				std::string v, f1, f2, f3;
@@ -54,7 +75,7 @@ Rr::Mesh Rr::Parser::parse(std::string file)
 				faces.push_back(f3);
 			}
 		}
-		myfile.close();
+		objfile.close();
 	}
 	else
 	{
@@ -67,7 +88,7 @@ Rr::Mesh Rr::Parser::parse(std::string file)
 	std::vector<float> normals;
 	for (int i = 0; i < faces.size(); i += 1)
 	{
-		// Find the index of the two slashes
+		// Find the index of the two slashes in the face
 		size_t slashIndex = faces[i].find('//');
 
 		// Based on the slashes extract the vertex and normal index of the faces
@@ -100,8 +121,4 @@ Rr::Mesh Rr::Parser::parse(std::string file)
 	mesh.setNormals(normals);
 
 	return mesh;
-}
-
-Rr::Parser::~Parser()
-{
 }
