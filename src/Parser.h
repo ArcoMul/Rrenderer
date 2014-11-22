@@ -14,6 +14,6 @@ namespace Rr
 		~Parser();
 
 		// Parses a .obj file to a corresponding Mesh
-		Mesh parse(std::string file);
+		void parse(std::string file, Mesh* mesh);
 	};
 }

@@ -18,7 +18,7 @@ Rr::Parser::~Parser()
 {
 }
 
-Rr::Mesh Rr::Parser::parse(std::string file)
+void Rr::Parser::parse(std::string file, Rr::Mesh* mesh)
 {
 	// Points substracted from the .obj file
 	std::vector<float> _points;
@@ -83,7 +83,6 @@ Rr::Mesh Rr::Parser::parse(std::string file)
 	}
 
 	// Generate the mesh based on the extracted data
-	Mesh mesh = Mesh();
 	std::vector<float> points;
 	std::vector<float> normals;
 	for (int i = 0; i < faces.size(); i += 1)
@@ -117,8 +116,6 @@ Rr::Mesh Rr::Parser::parse(std::string file)
 	}
 
 	// Set the points and normals of this mesh
-	mesh.setPoints(points);
-	mesh.setNormals(normals);
-
-	return mesh;
+	mesh->setPoints(points);
+	mesh->setNormals(normals);
 }

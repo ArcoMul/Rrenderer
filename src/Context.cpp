@@ -22,4 +22,8 @@ void Rr::Context::addObject(Object object)
 
 Rr::Context::~Context()
 {
+	for (int i = 0; i < objects.size(); i++)
+	{
+		objects[i].getMesh()->deleteBuffers();
+	}
 }

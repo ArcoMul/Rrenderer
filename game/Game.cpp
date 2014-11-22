@@ -27,7 +27,8 @@ int main(int argc, char* argv[])
 	Rr::Renderer::instance()->video->createWindow(640, 480, "Shaders!");
 
 	// Load the ball mesh
-	Rr::Mesh ballMesh = Rr::Renderer::instance()->parser->parse("../assets/ball.obj");
+	Rr::Mesh ballMesh;
+	Rr::Renderer::instance()->parser->parse("../assets/ball.obj", &ballMesh);
 
 	// Create the ball material
 	Rr::Material ballMaterial = Rr::Material();
@@ -44,7 +45,8 @@ int main(int argc, char* argv[])
 	Rr::Renderer::instance()->context->addObject(ball);
 
 	// Load the monkey mesh
-	Rr::Mesh monkeyMesh = Rr::Renderer::instance()->parser->parse("../assets/monkey.obj");
+	Rr::Mesh monkeyMesh;
+	Rr::Renderer::instance()->parser->parse("../assets/monkey.obj", &monkeyMesh);
 
 	// Create the monkey material
 	Rr::Material monkeyMaterial = Rr::Material();

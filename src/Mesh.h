@@ -24,6 +24,9 @@ namespace Rr
 		// Get the amount of points in this mesh
 		int getPointCount();
 
+		// Delete all the OpenGL buffers set by this mesh
+		void deleteBuffers();
+
 		// Vertex Array Object
 		GLuint vao;
 

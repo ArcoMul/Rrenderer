@@ -170,7 +170,7 @@ void Rr::VideoDriver::renderObject(Object* object)
 	setUniform1f("Strength", object->getMaterial()->getSpecularStrength());
 
 	setUniform3f("HalfVector", 0., 0., 0.);
-	setUniform3f("LightDirection", 0., 0., -1.);
+	setUniform3f("LightDirection", 1., 1., -1.);
 
 	// Check if there are any errors
 	debugShader(shaderProgramme);
@@ -228,7 +228,7 @@ void Rr::VideoDriver::bufferNormals(GLuint* nbo, GLuint* vao, int n, float norma
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 
-void deleteBuffer(GLuint* buffer)
+void Rr::VideoDriver::deleteBuffer(GLuint* buffer)
 {
 	glDeleteBuffers(1, buffer);
 }
