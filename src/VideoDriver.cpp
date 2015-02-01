@@ -1,7 +1,10 @@
 #include "VideoDriver.h"
 #include <GLFW/glfw3.h>
 #include <vector>
+#include "Vector3.h"
+#include "Matrix4.h"
 #include "Object.h"
+#include "Camera.h"
 #include "Mesh.h"
 
 void error_callback(int error, const char* description)
@@ -169,6 +172,8 @@ void Rr::VideoDriver::renderObject(Object* object)
 	setUniform1f("Shininess", object->getMaterial()->getSpecularStrength());
 	setUniform1f("Strength", object->getMaterial()->getSpecularStrength());
 
+	setUniform4fv("ViewMatrix", activeCamera->getViewMatrix()->toArray());
+
 	setUniform3f("HalfVector", 0., 0., 0.);
 	setUniform3f("LightDirection", 1., 1., -1.);
 
@@ -192,6 +197,10 @@ void Rr::VideoDriver::finishFrame()
 	glfwPollEvents();
 }
 
+void Rr::VideoDriver::setActiveCamera(Rr::Camera* camera)
+{
+	this->activeCamera = camera;
+}
 
 void Rr::VideoDriver::generateVertexArray(GLuint* vao)
 {
@@ -231,6 +240,12 @@ void Rr::VideoDriver::bufferNormals(GLuint* nbo, GLuint* vao, int n, float norma
 void Rr::VideoDriver::deleteBuffer(GLuint* buffer)
 {
 	glDeleteBuffers(1, buffer);
+}
+
+void Rr::VideoDriver::setUniform4fv(char* name, float* matrix)
+{
+	GLuint id = glGetUniformLocation(shaderProgramme, name);
+	glUniformMatrix4fv(id, 1, GL_TRUE, matrix);
 }
 
 void Rr::VideoDriver::setUniform4f(char* name, float v1, float v2, float v3, float v4)

@@ -11,6 +11,7 @@ Rr::Material::Material()
 		//TODO: "in vec4 VertexColor;"
 		"layout(location = 0) in vec4 VertexPosition;"
 		"layout(location = 1) in vec3 VertexNormal;"
+		"uniform mat4 ViewMatrix;"
 		"uniform vec4 ObjectColor;"
 		"out vec4 Color;"
 		"out vec3 Normal;"
@@ -21,7 +22,7 @@ Rr::Material::Material()
 			//TODO: "Normal = normalize(NormalMatrix * VertexNormal);"
 			//TODO: "gl_Position = MVPMatrix * VertexPosition;"
 			"Normal = VertexNormal;"
-			"gl_Position = VertexPosition;"
+			"gl_Position = ViewMatrix * VertexPosition;"
 		"}"
 	);
 

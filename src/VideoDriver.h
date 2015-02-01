@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include "Rrenderer.h"
+#include "Camera.h"
 
 class GLFWwindow;
 
@@ -47,6 +48,8 @@ namespace Rr
 		// Collection of opengl calls to display the just rendered frame
 		void finishFrame();
 
+		void setActiveCamera(Camera* camera);
+
 		// Generate a new vertex array, puts the id in the given pointer
 		void generateVertexArray(GLuint* vao);
 
@@ -66,6 +69,7 @@ namespace Rr
 		void deleteBuffer(GLuint* buffer);
 
 		// Wrapper functions to set Uniforms in OpenGL
+		void setUniform4fv(char* name, float* matrix);
 		void setUniform4f(char* name, float v1, float v2, float v3, float v4);
 		void setUniform3f(char* name, float v1, float v2, float v3);
 		void setUniform1f(char* name, float v1);
@@ -76,6 +80,8 @@ namespace Rr
 
 		// The shader programme we use to compile and link our shaders to
 		GLuint shaderProgramme;
+
+		Camera* activeCamera;
 	};
 }
 

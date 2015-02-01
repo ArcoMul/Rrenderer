@@ -3,6 +3,7 @@
 #include "Rrenderer.h"
 #include <vector>
 #include "Object.h"
+#include "Camera.h"
 
 class VideoDriver;
 
@@ -20,12 +21,16 @@ namespace Rr
 		// Adds a new object to this context
 		void addObject(Object object);
 
+		void setCamera(Camera camera);
+
 	private:
 		// Reference to the video driver, since it is used a lot
 		VideoDriver* video;
 
 		// The objects to be rendered in this context
 		std::vector<Object> objects;
+
+		Camera camera;
 	};
 }
 

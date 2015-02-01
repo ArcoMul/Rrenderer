@@ -20,6 +20,12 @@ void Rr::Context::addObject(Object object)
 	objects.push_back(object);
 }
 
+void Rr::Context::setCamera(Camera camera)
+{
+	this->camera = camera;
+	video->setActiveCamera(&this->camera);
+}
+
 Rr::Context::~Context()
 {
 	for (int i = 0; i < objects.size(); i++)

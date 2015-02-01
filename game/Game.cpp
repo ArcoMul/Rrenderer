@@ -6,6 +6,9 @@
 #include <Color.h>
 #include <Material.h>
 #include <Object.h>
+#include <Camera.h>
+#include <Vector3.h>
+#include <Matrix4.h>
 
 int main(int argc, char* argv[])
 {
@@ -61,6 +64,10 @@ int main(int argc, char* argv[])
 
 	// Add the monkey to the context
 	Rr::Renderer::instance()->context->addObject(monkey);
+
+	Rr::Camera camera = Rr::Camera();
+	camera.setPosition(Rr::Vector3(-0.5, -0.5, 0));
+	Rr::Renderer::instance()->context->setCamera(camera);
 
 	// Start running the engine
 	Rr::Renderer::instance()->run();
