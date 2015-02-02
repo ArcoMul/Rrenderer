@@ -23,6 +23,8 @@ namespace Rr
 		// Creates a glfw window
 		bool createWindow(int x, int y, char* title);
 
+		void setViewportSize(GLFWwindow* window, int width, int height);
+
 		// Returns the current glfw window, only one supported at the moment
 		GLFWwindow* getWindow();
 

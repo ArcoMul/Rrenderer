@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
 	}
 
 	// Create a window
-	Rr::Renderer::instance()->video->createWindow(640, 480, "Shaders!");
+	Rr::Renderer::instance()->video->createWindow(800, 600, "Shaders!");
 
 	// Load the ball mesh
 	Rr::Mesh ballMesh;

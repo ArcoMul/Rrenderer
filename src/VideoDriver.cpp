@@ -1,6 +1,7 @@
 #include "VideoDriver.h"
 #include <GLFW/glfw3.h>
 #include <vector>
+#include "Renderer.h"
 #include "Vector3.h"
 #include "Matrix4.h"
 #include "Object.h"
@@ -20,7 +21,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-	glViewport(0, 0, width, height);
+	Rr::Renderer::instance()->video->setViewportSize(window, width, height);
 }
 
 Rr::VideoDriver::VideoDriver()
@@ -68,6 +69,12 @@ bool Rr::VideoDriver::createWindow(int x, int y, char* title)
 	glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
 
 	shaderProgramme = glCreateProgram();
+}
+
+void Rr::VideoDriver::setViewportSize(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
+	activeCamera->setAspect(static_cast<float>(width) / static_cast<float>(height));
 }
 
 GLuint Rr::VideoDriver::createAndCompileShader(GLuint type, char* source)
