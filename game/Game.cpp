@@ -61,6 +61,7 @@ int main(int argc, char* argv[])
 	Rr::Object monkey;
 	monkey.setMesh(monkeyMesh);
 	monkey.setMaterial(monkeyMaterial);
+	monkey.setPosition(Rr::Vector3(1.0, 0, 0.0));
 
 	// Add the monkey to the context
 	Rr::Renderer::instance()->context->addObject(monkey);

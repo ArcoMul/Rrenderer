@@ -173,6 +173,7 @@ void Rr::VideoDriver::renderObject(Object* object)
 	setUniform1f("Strength", object->getMaterial()->getSpecularStrength());
 
 	setUniform4fv("ViewMatrix", activeCamera->getViewMatrix()->toArray());
+	setUniform4fv("ModelMatrix", object->getModelMatrix()->toArray());
 
 	setUniform3f("HalfVector", 0., 0., 0.);
 	setUniform3f("LightDirection", 1., 1., -1.);
