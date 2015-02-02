@@ -13,10 +13,24 @@ namespace Rr
 		~Camera();
 
 		void setPosition(Vector3 vector);
+		void setNear(float n);
+		void setFar(float n);
+		void setAspect(float n);
+		void setFOV(float angle);
+
+		void recalculateProjectMatrix();
+
 		Matrix4* getViewMatrix();
+		Matrix4* getProjectionMatrix();
 	private:
 		bool orthoGrahpic;
+		float near;
+		float far;
+		float aspect;
+		float FOV;
+
 		Matrix4 viewMatrix;
+		Matrix4 projectionMatrix;
 	};
 }
 

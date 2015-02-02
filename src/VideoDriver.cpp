@@ -172,6 +172,7 @@ void Rr::VideoDriver::renderObject(Object* object)
 	setUniform1f("Shininess", object->getMaterial()->getSpecularStrength());
 	setUniform1f("Strength", object->getMaterial()->getSpecularStrength());
 
+	setUniform4fv("ProjectionMatrix", activeCamera->getProjectionMatrix()->toArray());
 	setUniform4fv("ViewMatrix", activeCamera->getViewMatrix()->toArray());
 	setUniform4fv("ModelMatrix", object->getModelMatrix()->toArray());
 
@@ -201,7 +202,8 @@ void Rr::VideoDriver::finishFrame()
 void Rr::VideoDriver::setActiveCamera(Rr::Camera* camera)
 {
 	this->activeCamera = camera;
-}
+}	
+
 
 void Rr::VideoDriver::generateVertexArray(GLuint* vao)
 {

@@ -61,13 +61,13 @@ int main(int argc, char* argv[])
 	Rr::Object monkey;
 	monkey.setMesh(monkeyMesh);
 	monkey.setMaterial(monkeyMaterial);
-	monkey.setPosition(Rr::Vector3(1.0, 0, 0.0));
+	monkey.setPosition(Rr::Vector3(0.0, 0.0, 0.0));
 
 	// Add the monkey to the context
 	Rr::Renderer::instance()->context->addObject(monkey);
 
 	Rr::Camera camera = Rr::Camera();
-	camera.setPosition(Rr::Vector3(-0.5, -0.5, 0));
+	camera.setPosition(Rr::Vector3(-0.5, -0.5, -3));
 	Rr::Renderer::instance()->context->setCamera(camera);
 
 	// Start running the engine
