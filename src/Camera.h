@@ -20,6 +20,7 @@ namespace Rr
 
 		void recalculateProjectMatrix();
 
+		Vector3 getPosition();
 		Matrix4* getViewMatrix();
 		Matrix4* getProjectionMatrix();
 	private:

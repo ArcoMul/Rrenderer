@@ -1,12 +1,15 @@
 #pragma once
 
 #include "Rrenderer.h"
+#include <vector>
+#include <functional>
 
 namespace Rr
 {
 	class VideoDriver;
 	class Parser;
 	class Context;
+	class Input;
 
 	class RRENDERER_API Renderer
 	{
@@ -20,10 +23,16 @@ namespace Rr
 		void run();
 		void destroy();
 
+		void bindUpdate(std::function<void(float)> f);
+		void callBindedUpdate();
+
 		VideoDriver* video;
 		Parser* parser;
 		Context* context;
+		Input* input;
 	private:
 		static Renderer* m_pInstance;
+
+		std::function<void(float)> bindedUpdate;
 	};
 }

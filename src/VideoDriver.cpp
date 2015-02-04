@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 #include "Renderer.h"
+#include "Input.h"
 #include "Vector3.h"
 #include "Matrix4.h"
 #include "Object.h"
@@ -17,6 +18,14 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
+
+	if (action == GLFW_PRESS) {
+		Rr::Renderer::instance()->input->setPressed(key, true);
+	}
+
+	if (action == GLFW_RELEASE) {
+		Rr::Renderer::instance()->input->setPressed(key, false);
+	}
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)

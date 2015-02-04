@@ -17,9 +17,14 @@ Rr::Camera::~Camera()
 
 void Rr::Camera::setPosition(Rr::Vector3 vector)
 {
-	viewMatrix[3] = vector.x();
-	viewMatrix[7] = vector.y();
-	viewMatrix[11] = vector.z();
+	viewMatrix[3] = vector.x;
+	viewMatrix[7] = vector.y;
+	viewMatrix[11] = vector.z;
+}
+
+Rr::Vector3 Rr::Camera::getPosition()
+{
+	return Rr::Vector3(viewMatrix[3], viewMatrix[7], viewMatrix[11]);
 }
 
 void Rr::Camera::setNear(float n)

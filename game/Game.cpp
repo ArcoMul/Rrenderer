@@ -1,7 +1,10 @@
+#include <cstdio>
+
 #include <Renderer.h>
 #include <VideoDriver.h>
 #include <Parser.h>
 #include <Context.h>
+#include <Input.h>
 #include <Mesh.h>
 #include <Color.h>
 #include <Material.h>
@@ -9,6 +12,40 @@
 #include <Camera.h>
 #include <Vector3.h>
 #include <Matrix4.h>
+
+void start()
+{
+
+}
+
+Rr::Camera* camera;
+
+void update(float deltaTime)
+{
+	Rr::Vector3 pos = camera->getPosition();
+
+	if (Rr::Renderer::instance()->input->isPressed(Rr::Input::KEY_W)) {
+		pos.z += 0.1;
+	}
+
+	if (Rr::Renderer::instance()->input->isPressed(Rr::Input::KEY_S)) {
+		pos.z -= 0.1;
+	}
+
+	if (Rr::Renderer::instance()->input->isPressed(Rr::Input::KEY_A)) {
+		pos.x += 0.1;
+	}
+
+	if (Rr::Renderer::instance()->input->isPressed(Rr::Input::KEY_D)) {
+		pos.x -= 0.1;
+	}
+
+	if (Rr::Renderer::instance()->input->isPressed(Rr::Input::KEY_SPACE)) {
+		pos.y -= 0.1;
+	}
+
+	camera->setPosition(pos);
+}
 
 int main(int argc, char* argv[])
 {
@@ -18,7 +55,7 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
-	//renderer->bindUpdate(&update);
+	Rr::Renderer::instance()->bindUpdate(&update);
 	//renderer->bindStart(&start);
 
 	// Initialize the render engine and its components
@@ -66,8 +103,8 @@ int main(int argc, char* argv[])
 	// Add the monkey to the context
 	Rr::Renderer::instance()->context->addObject(monkey);
 
-	Rr::Camera camera = Rr::Camera();
-	camera.setPosition(Rr::Vector3(-0.5, -0.5, -3));
+	camera = new Rr::Camera();
+	camera->setPosition(Rr::Vector3(-0.5, -0.5, -3));
 	Rr::Renderer::instance()->context->setCamera(camera);
 
 	// Start running the engine
@@ -77,14 +114,4 @@ int main(int argc, char* argv[])
 	Rr::Renderer::instance()->destroy();
 
 	return 0;
-}
-
-void start()
-{
-
-}
-
-void update()
-{
-
 }

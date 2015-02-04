@@ -82,6 +82,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Context.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Matrix4.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -95,6 +96,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Context.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Matrix4.h" />
     <ClInclude Include="Mesh.h" />

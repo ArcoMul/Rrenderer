@@ -21,7 +21,7 @@ namespace Rr
 		// Adds a new object to this context
 		void addObject(Object object);
 
-		void setCamera(Camera camera);
+		void setCamera(Camera* camera);
 
 	private:
 		// Reference to the video driver, since it is used a lot
@@ -30,7 +30,7 @@ namespace Rr
 		// The objects to be rendered in this context
 		std::vector<Object> objects;
 
-		Camera camera;
+		Camera* camera;
 	};
 }
 

@@ -30,9 +30,9 @@ Rr::Material* Rr::Object::getMaterial()
 
 void Rr::Object::setPosition(Rr::Vector3 position)
 {
-	modelMatrix[3] = position.x();
-	modelMatrix[7] = position.y();
-	modelMatrix[11] = position.z();
+	modelMatrix[3] = position.x;
+	modelMatrix[7] = position.y;
+	modelMatrix[11] = position.z;
 }
 
 Rr::Vector3 Rr::Object::getPosition()
