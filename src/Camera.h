@@ -38,6 +38,7 @@ namespace Rr
 
 		Vector3 position;
 		Vector3 rotation;
+		Matrix4 rotationMatrix;
 		Matrix4 viewMatrix;
 		Matrix4 projectionMatrix;
 	};

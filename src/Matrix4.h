@@ -21,6 +21,7 @@ namespace Rr
 		void rotateZ(float angle);
 
 		void toIdentity();
+		Matrix4 inverse();
 		float* toArray() { return points; }
 		void print();
 	private:

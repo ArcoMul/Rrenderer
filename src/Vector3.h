@@ -11,6 +11,8 @@ namespace Rr
 		Vector3(float x, float y, float z);
 		~Vector3();
 
+		Vector3 operator+ (Vector3 other);
+
 		float x;
 		float y;
 		float z;

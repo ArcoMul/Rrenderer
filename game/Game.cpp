@@ -23,13 +23,13 @@ Rr::Camera* camera;
 void update(float deltaTime)
 {
 	Rr::Vector3 pos = Rr::Vector3();
-	Rr::Vector3 rot = Rr::Vector3();
+	Rr::Vector3 rot = camera->getRotation();
 	Rr::Vector3 delta = Rr::Renderer::instance()->input->getMousePositionDelta();
 
 	if (delta.x != 0 || delta.y != 0) {
 		rot.y -= delta.x / 20;
 		rot.x -= delta.y / 20;
-		camera->rotate(rot);
+		camera->setRotation(rot);
 	}	
 
 	if (Rr::Renderer::instance()->input->isPressed(Rr::Input::KEY_W)) {
@@ -74,56 +74,115 @@ int main(int argc, char* argv[])
 	// Create a window
 	Rr::Renderer::instance()->video->createWindow(800, 600, "Shaders!");
 
-	// Load the ball mesh
-	Rr::Mesh ballMesh;
-	Rr::Renderer::instance()->parser->parse("../assets/ball.obj", &ballMesh);
+	/* Floor */
+	Rr::Mesh floorMesh;
+	Rr::Renderer::instance()->parser->parse("../assets/floor.obj", &floorMesh);
 
-	// Create the ball material
-	Rr::Material ballMaterial = Rr::Material();
-	ballMaterial.setBaseColor(Rr::Color(0, 125, 255));
-	ballMaterial.setAmbient(0.3);
-	ballMaterial.setSpecular(1, Rr::Color(200, 200, 200));
+	Rr::Material floorMaterial = Rr::Material();
+	floorMaterial.setBaseColor(Rr::Color(0, 255, 125));
+	floorMaterial.setAmbient(0.2);
+	floorMaterial.setSpecular(1, Rr::Color(200, 200, 200));
 
-	// Create the ball object and link the mesh and material on it
-	Rr::Object ball;
-	ball.setMesh(ballMesh);
-	ball.setMaterial(ballMaterial);
+	Rr::Object floor;
+	floor.setMesh(floorMesh);
+	floor.setMaterial(floorMaterial);
 
-	// Add the ball to the context
-	Rr::Renderer::instance()->context->addObject(ball);
+	Rr::Renderer::instance()->context->addObject(floor);
 
-	// Load the monkey mesh
-	Rr::Mesh monkeyMesh;
-	Rr::Renderer::instance()->parser->parse("../assets/monkey.obj", &monkeyMesh);
+	/* House Walls */
+	Rr::Mesh houseMesh;
+	Rr::Renderer::instance()->parser->parse("../assets/house-walls.obj", &houseMesh);
 
-	// Create the monkey material
-	Rr::Material monkeyMaterial = Rr::Material();
-	monkeyMaterial.setBaseColor(Rr::Color(255, 125, 0));
-	monkeyMaterial.setAmbient(0.2);
-	monkeyMaterial.setSpecular(1, Rr::Color(200, 200, 200));
+	Rr::Material houseMaterial = Rr::Material();
+	houseMaterial.setBaseColor(Rr::Color(241, 230, 155));
+	houseMaterial.setAmbient(0.3);
+	houseMaterial.setSpecular(1, Rr::Color(200, 200, 200));
 
-	// Create the monkey object and link the mesh and material on it
-	Rr::Object monkey;
-	monkey.setMesh(monkeyMesh);
-	monkey.setMaterial(monkeyMaterial);
-	monkey.setPosition(Rr::Vector3(0.0, 0.0, 0.0));
-	Rr::Renderer::instance()->context->addObject(monkey);
+	Rr::Object house;
+	house.setMesh(houseMesh);
+	house.setMaterial(houseMaterial);
 
-	Rr::Object monkey2;
-	monkey2.setMesh(monkeyMesh);
-	monkey2.setMaterial(monkeyMaterial);
-	monkey2.setPosition(Rr::Vector3(3.0, 0.0, 0.0));
-	Rr::Renderer::instance()->context->addObject(monkey2);
+	Rr::Renderer::instance()->context->addObject(house);
 
-	Rr::Object monkey3;
-	monkey3.setMesh(monkeyMesh);
-	monkey3.setMaterial(monkeyMaterial);
-	monkey3.setPosition(Rr::Vector3(-3.0, 0.0, 0.0));
-	Rr::Renderer::instance()->context->addObject(monkey3);
+	/* House Roof */
+	Rr::Mesh roofMesh;
+	Rr::Renderer::instance()->parser->parse("../assets/house-roof.obj", &roofMesh);
+
+	Rr::Material roofMaterial = Rr::Material();
+	roofMaterial.setBaseColor(Rr::Color(204, 77, 77));
+	roofMaterial.setAmbient(0.3);
+	roofMaterial.setSpecular(1, Rr::Color(200, 200, 200));
+
+	Rr::Object roof;
+	roof.setMesh(roofMesh);
+	roof.setMaterial(roofMaterial);
+
+	Rr::Renderer::instance()->context->addObject(roof);
+
+	/* Path */
+	Rr::Mesh pathMesh;
+	Rr::Renderer::instance()->parser->parse("../assets/path.obj", &pathMesh);
+
+	Rr::Material pathMaterial = Rr::Material();
+	pathMaterial.setBaseColor(Rr::Color(165, 165, 165));
+	pathMaterial.setAmbient(0.2);
+	pathMaterial.setSpecular(1, Rr::Color(200, 200, 200));
+
+	Rr::Object path;
+	path.setMesh(pathMesh);
+	path.setMaterial(pathMaterial);
+
+	Rr::Renderer::instance()->context->addObject(path);
+
+	/* Pool */
+	Rr::Mesh poolMesh;
+	Rr::Renderer::instance()->parser->parse("../assets/pool.obj", &poolMesh);
+
+	Rr::Material poolMaterial = Rr::Material();
+	poolMaterial.setBaseColor(Rr::Color(27, 188, 255));
+	poolMaterial.setAmbient(0.2);
+	poolMaterial.setSpecular(1, Rr::Color(200, 200, 200));
+
+	Rr::Object pool;
+	path.setMesh(poolMesh);
+	path.setMaterial(poolMaterial);
+
+	Rr::Renderer::instance()->context->addObject(pool);
+
+
+	/* Tree leaves */
+	Rr::Mesh leavesMesh;
+	Rr::Renderer::instance()->parser->parse("../assets/tree-leaves.obj", &leavesMesh);
+
+	Rr::Material leavesMaterial = Rr::Material();
+	leavesMaterial.setBaseColor(Rr::Color(49, 131, 27));
+	leavesMaterial.setAmbient(0.2);
+	leavesMaterial.setSpecular(1, Rr::Color(200, 200, 200));
+
+	Rr::Object leaves;
+	leaves.setMesh(leavesMesh);
+	leaves.setMaterial(leavesMaterial);
+	leaves.setPosition(Rr::Vector3(0.0, 0.0, 3.0));
+	Rr::Renderer::instance()->context->addObject(leaves);
+
+	/* Tree trunk */
+	Rr::Mesh trunkMesh;
+	Rr::Renderer::instance()->parser->parse("../assets/tree-trunk.obj", &trunkMesh);
+
+	Rr::Material trunkMaterial = Rr::Material();
+	trunkMaterial.setBaseColor(Rr::Color(121, 69, 22));
+	trunkMaterial.setAmbient(0.2);
+	trunkMaterial.setSpecular(1, Rr::Color(200, 200, 200));
+
+	Rr::Object trunk;
+	trunk.setMesh(trunkMesh);
+	trunk.setMaterial(trunkMaterial);
+	trunk.setPosition(Rr::Vector3(0.0, 0.0, 3.0));
+	Rr::Renderer::instance()->context->addObject(trunk);
 
 	camera = new Rr::Camera();
-	camera->setPosition(Rr::Vector3(0.0, 0.0, 3));
-	camera->setRotation(Rr::Vector3(0.0, 180.0, 0.0));
+	camera->setPosition(Rr::Vector3(0.0, -5.0, 12));
+	camera->setRotation(Rr::Vector3(20.0, 180.0, 0.0));
 	Rr::Renderer::instance()->context->setCamera(camera);
 
 	// Start running the engine

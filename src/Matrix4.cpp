@@ -93,6 +93,125 @@ Rr::Matrix4 Rr::Matrix4::operator* (Rr::Matrix4 other)
 	// 5 * 0 + 6 * 4 + 7 * 8  + 8 * 12
 }
 
+Rr::Matrix4 Rr::Matrix4::inverse()
+{
+	Matrix4 inv;
+
+	inv[0] = this->points[5] * this->points[10] * this->points[15] -
+		this->points[5] * this->points[11] * this->points[14] -
+		this->points[9] * this->points[6] * this->points[15] +
+		this->points[9] * this->points[7] * this->points[14] +
+		this->points[13] * this->points[6] * this->points[11] -
+		this->points[13] * this->points[7] * this->points[10];
+
+	inv[4] = -this->points[4] * this->points[10] * this->points[15] +
+		this->points[4] * this->points[11] * this->points[14] +
+		this->points[8] * this->points[6] * this->points[15] -
+		this->points[8] * this->points[7] * this->points[14] -
+		this->points[12] * this->points[6] * this->points[11] +
+		this->points[12] * this->points[7] * this->points[10];
+
+	inv[8] = this->points[4] * this->points[9] * this->points[15] -
+		this->points[4] * this->points[11] * this->points[13] -
+		this->points[8] * this->points[5] * this->points[15] +
+		this->points[8] * this->points[7] * this->points[13] +
+		this->points[12] * this->points[5] * this->points[11] -
+		this->points[12] * this->points[7] * this->points[9];
+
+	inv[12] = -this->points[4] * this->points[9] * this->points[14] +
+		this->points[4] * this->points[10] * this->points[13] +
+		this->points[8] * this->points[5] * this->points[14] -
+		this->points[8] * this->points[6] * this->points[13] -
+		this->points[12] * this->points[5] * this->points[10] +
+		this->points[12] * this->points[6] * this->points[9];
+
+	inv[1] = -this->points[1] * this->points[10] * this->points[15] +
+		this->points[1] * this->points[11] * this->points[14] +
+		this->points[9] * this->points[2] * this->points[15] -
+		this->points[9] * this->points[3] * this->points[14] -
+		this->points[13] * this->points[2] * this->points[11] +
+		this->points[13] * this->points[3] * this->points[10];
+
+	inv[5] = this->points[0] * this->points[10] * this->points[15] -
+		this->points[0] * this->points[11] * this->points[14] -
+		this->points[8] * this->points[2] * this->points[15] +
+		this->points[8] * this->points[3] * this->points[14] +
+		this->points[12] * this->points[2] * this->points[11] -
+		this->points[12] * this->points[3] * this->points[10];
+
+	inv[9] = -this->points[0] * this->points[9] * this->points[15] +
+		this->points[0] * this->points[11] * this->points[13] +
+		this->points[8] * this->points[1] * this->points[15] -
+		this->points[8] * this->points[3] * this->points[13] -
+		this->points[12] * this->points[1] * this->points[11] +
+		this->points[12] * this->points[3] * this->points[9];
+
+	inv[13] = this->points[0] * this->points[9] * this->points[14] -
+		this->points[0] * this->points[10] * this->points[13] -
+		this->points[8] * this->points[1] * this->points[14] +
+		this->points[8] * this->points[2] * this->points[13] +
+		this->points[12] * this->points[1] * this->points[10] -
+		this->points[12] * this->points[2] * this->points[9];
+
+	inv[2] = this->points[1] * this->points[6] * this->points[15] -
+		this->points[1] * this->points[7] * this->points[14] -
+		this->points[5] * this->points[2] * this->points[15] +
+		this->points[5] * this->points[3] * this->points[14] +
+		this->points[13] * this->points[2] * this->points[7] -
+		this->points[13] * this->points[3] * this->points[6];
+
+	inv[6] = -this->points[0] * this->points[6] * this->points[15] +
+		this->points[0] * this->points[7] * this->points[14] +
+		this->points[4] * this->points[2] * this->points[15] -
+		this->points[4] * this->points[3] * this->points[14] -
+		this->points[12] * this->points[2] * this->points[7] +
+		this->points[12] * this->points[3] * this->points[6];
+
+	inv[10] = this->points[0] * this->points[5] * this->points[15] -
+		this->points[0] * this->points[7] * this->points[13] -
+		this->points[4] * this->points[1] * this->points[15] +
+		this->points[4] * this->points[3] * this->points[13] +
+		this->points[12] * this->points[1] * this->points[7] -
+		this->points[12] * this->points[3] * this->points[5];
+
+	inv[14] = -this->points[0] * this->points[5] * this->points[14] +
+		this->points[0] * this->points[6] * this->points[13] +
+		this->points[4] * this->points[1] * this->points[14] -
+		this->points[4] * this->points[2] * this->points[13] -
+		this->points[12] * this->points[1] * this->points[6] +
+		this->points[12] * this->points[2] * this->points[5];
+
+	inv[3] = -this->points[1] * this->points[6] * this->points[11] +
+		this->points[1] * this->points[7] * this->points[10] +
+		this->points[5] * this->points[2] * this->points[11] -
+		this->points[5] * this->points[3] * this->points[10] -
+		this->points[9] * this->points[2] * this->points[7] +
+		this->points[9] * this->points[3] * this->points[6];
+
+	inv[7] = this->points[0] * this->points[6] * this->points[11] -
+		this->points[0] * this->points[7] * this->points[10] -
+		this->points[4] * this->points[2] * this->points[11] +
+		this->points[4] * this->points[3] * this->points[10] +
+		this->points[8] * this->points[2] * this->points[7] -
+		this->points[8] * this->points[3] * this->points[6];
+
+	inv[11] = -this->points[0] * this->points[5] * this->points[11] +
+		this->points[0] * this->points[7] * this->points[9] +
+		this->points[4] * this->points[1] * this->points[11] -
+		this->points[4] * this->points[3] * this->points[9] -
+		this->points[8] * this->points[1] * this->points[7] +
+		this->points[8] * this->points[3] * this->points[5];
+
+	inv[15] = this->points[0] * this->points[5] * this->points[10] -
+		this->points[0] * this->points[6] * this->points[9] -
+		this->points[4] * this->points[1] * this->points[10] +
+		this->points[4] * this->points[2] * this->points[9] +
+		this->points[8] * this->points[1] * this->points[6] -
+		this->points[8] * this->points[2] * this->points[5];
+
+	return inv;
+}
+
 void Rr::Matrix4::print()
 {
 	printf("%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n", points[0], points[1], points[2], points[3], points[4], points[5], points[6], points[7], points[8], points[9], points[10], points[11], points[12], points[13], points[14], points[15]);

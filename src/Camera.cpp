@@ -29,7 +29,8 @@ Rr::Vector3 Rr::Camera::getPosition()
 void Rr::Camera::setRotation(Rr::Vector3 vector)
 {
 	this->rotation = vector;
-	this->recalculateViewMatrix();
+	viewMatrix = rotationMatrix.inverse() * viewMatrix;
+	this->rotate(this->rotation);
 }
 
 Rr::Vector3 Rr::Camera::getRotation()
@@ -79,7 +80,9 @@ void Rr::Camera::rotate(Rr::Vector3 vector)
 	Matrix4 rotationZMatrix;
 	rotationZMatrix.rotateZ(vector.z);
 
-	viewMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix * viewMatrix;
+	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
+
+	viewMatrix = rotationMatrix * viewMatrix;
 }
 
 void Rr::Camera::recalculateViewMatrix()
@@ -98,7 +101,8 @@ void Rr::Camera::recalculateViewMatrix()
 	Matrix4 rotationZMatrix;
 	rotationZMatrix.rotateZ(this->rotation.z);
 
-	viewMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix * translationMatrix;
+	rotationMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix;
+	viewMatrix = rotationMatrix * translationMatrix * viewMatrix;
 }
 
 void Rr::Camera::recalculateProjectMatrix()
