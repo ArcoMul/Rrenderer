@@ -22,29 +22,37 @@ Rr::Camera* camera;
 
 void update(float deltaTime)
 {
-	Rr::Vector3 pos = camera->getPosition();
+	Rr::Vector3 pos = Rr::Vector3();
+	Rr::Vector3 rot = Rr::Vector3();
+	Rr::Vector3 delta = Rr::Renderer::instance()->input->getMousePositionDelta();
+
+	if (delta.x != 0 || delta.y != 0) {
+		rot.y -= delta.x / 20;
+		rot.x -= delta.y / 20;
+		camera->rotate(rot);
+	}	
 
 	if (Rr::Renderer::instance()->input->isPressed(Rr::Input::KEY_W)) {
-		pos.z += 0.1;
+		pos.z += 0.05;
 	}
 
 	if (Rr::Renderer::instance()->input->isPressed(Rr::Input::KEY_S)) {
-		pos.z -= 0.1;
+		pos.z -= 0.05;
 	}
 
 	if (Rr::Renderer::instance()->input->isPressed(Rr::Input::KEY_A)) {
-		pos.x += 0.1;
+		pos.x += 0.05;
 	}
 
 	if (Rr::Renderer::instance()->input->isPressed(Rr::Input::KEY_D)) {
-		pos.x -= 0.1;
+		pos.x -= 0.05;
 	}
 
 	if (Rr::Renderer::instance()->input->isPressed(Rr::Input::KEY_SPACE)) {
-		pos.y -= 0.1;
+		pos.y -= 0.05;
 	}
 
-	camera->setPosition(pos);
+	camera->translate(pos);
 }
 
 int main(int argc, char* argv[])
@@ -99,12 +107,23 @@ int main(int argc, char* argv[])
 	monkey.setMesh(monkeyMesh);
 	monkey.setMaterial(monkeyMaterial);
 	monkey.setPosition(Rr::Vector3(0.0, 0.0, 0.0));
-
-	// Add the monkey to the context
 	Rr::Renderer::instance()->context->addObject(monkey);
 
+	Rr::Object monkey2;
+	monkey2.setMesh(monkeyMesh);
+	monkey2.setMaterial(monkeyMaterial);
+	monkey2.setPosition(Rr::Vector3(3.0, 0.0, 0.0));
+	Rr::Renderer::instance()->context->addObject(monkey2);
+
+	Rr::Object monkey3;
+	monkey3.setMesh(monkeyMesh);
+	monkey3.setMaterial(monkeyMaterial);
+	monkey3.setPosition(Rr::Vector3(-3.0, 0.0, 0.0));
+	Rr::Renderer::instance()->context->addObject(monkey3);
+
 	camera = new Rr::Camera();
-	camera->setPosition(Rr::Vector3(-0.5, -0.5, -3));
+	camera->setPosition(Rr::Vector3(0.0, 0.0, 3));
+	camera->setRotation(Rr::Vector3(0.0, 180.0, 0.0));
 	Rr::Renderer::instance()->context->setCamera(camera);
 
 	// Start running the engine

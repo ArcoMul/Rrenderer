@@ -213,6 +213,16 @@ void Rr::VideoDriver::finishFrame()
 
 	// Update other events like input handling 
 	glfwPollEvents();
+
+	double x;
+	double y;
+	glfwGetCursorPos(window, &x, &y);
+	Rr::Renderer::instance()->input->setMousePosition(x, y);
+
+	if (x < 50) { glfwSetCursorPos(window, 750, y); }
+	if (x > 750) { glfwSetCursorPos(window, 50, y); }
+	if (y < 50) { glfwSetCursorPos(window, x, 550); }
+	if (y > 550) { glfwSetCursorPos(window, x, 50); }
 }
 
 void Rr::VideoDriver::setActiveCamera(Rr::Camera* camera)

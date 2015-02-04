@@ -17,14 +17,24 @@ Rr::Camera::~Camera()
 
 void Rr::Camera::setPosition(Rr::Vector3 vector)
 {
-	viewMatrix[3] = vector.x;
-	viewMatrix[7] = vector.y;
-	viewMatrix[11] = vector.z;
+	this->position = vector;
+	this->recalculateViewMatrix();
 }
 
 Rr::Vector3 Rr::Camera::getPosition()
 {
-	return Rr::Vector3(viewMatrix[3], viewMatrix[7], viewMatrix[11]);
+	return this->position;
+}
+
+void Rr::Camera::setRotation(Rr::Vector3 vector)
+{
+	this->rotation = vector;
+	this->recalculateViewMatrix();
+}
+
+Rr::Vector3 Rr::Camera::getRotation()
+{
+	return this->rotation;
 }
 
 void Rr::Camera::setNear(float n)
@@ -51,19 +61,59 @@ void Rr::Camera::setFOV(float angle)
 	this->recalculateProjectMatrix();
 }
 
+void Rr::Camera::translate(Rr::Vector3 vector)
+{
+	Matrix4 translationMatrix;
+	translationMatrix.translate(vector);
+	viewMatrix = translationMatrix * viewMatrix;
+}
+
+void Rr::Camera::rotate(Rr::Vector3 vector)
+{
+	Matrix4 rotationXMatrix;
+	rotationXMatrix.rotateX(vector.x);
+
+	Matrix4 rotationYMatrix;
+	rotationYMatrix.rotateY(vector.y);
+
+	Matrix4 rotationZMatrix;
+	rotationZMatrix.rotateZ(vector.z);
+
+	viewMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix * viewMatrix;
+}
+
+void Rr::Camera::recalculateViewMatrix()
+{
+	viewMatrix.toIdentity();
+	
+	Matrix4 translationMatrix;
+	translationMatrix.translate(this->position);
+
+	Matrix4 rotationXMatrix;
+	rotationXMatrix.rotateX(this->rotation.x);
+
+	Matrix4 rotationYMatrix;
+	rotationYMatrix.rotateY(this->rotation.y);
+
+	Matrix4 rotationZMatrix;
+	rotationZMatrix.rotateZ(this->rotation.z);
+
+	viewMatrix = rotationXMatrix * rotationYMatrix * rotationZMatrix * translationMatrix;
+}
+
 void Rr::Camera::recalculateProjectMatrix()
 {
-	float top = this->near * tan((M_PI / 180) * (this->FOV / 2));
+	float top = this->near * tan((M_PI / 180.0) * (this->FOV / 2.0));
 	float bottom = -top;
 	float right = top * this->aspect;
 	float left = -right;
 
-	this->projectionMatrix[0] = (2 * this->near) / (right - left);
-	this->projectionMatrix[3] = (right + left) / (right - left);
-	this->projectionMatrix[5] = (2 * this->near) / (top - bottom);
+	this->projectionMatrix[0] = (2.0 * this->near) / (right - left);
+	this->projectionMatrix[2] = (right + left) / (right - left);
+	this->projectionMatrix[5] = (2.0 * this->near) / (top - bottom);
 	this->projectionMatrix[6] = (top + bottom) / (top - bottom);
-	this->projectionMatrix[10] = (far + near) / (far - near);
-	this->projectionMatrix[11] = (2 * far * near) / (far - near);
+	this->projectionMatrix[10] = -(far + near) / (far - near);
+	this->projectionMatrix[11] = -(2.0 * far * near) / (far - near);
 	this->projectionMatrix[14] = -1;
 }
 

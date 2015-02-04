@@ -13,14 +13,20 @@ namespace Rr
 		~Camera();
 
 		void setPosition(Vector3 vector);
+		void setRotation(Vector3 vector);
 		void setNear(float n);
 		void setFar(float n);
 		void setAspect(float n);
 		void setFOV(float angle);
 
+		void translate(Vector3 vector);
+		void rotate(Vector3 vector);
+
+		void recalculateViewMatrix();
 		void recalculateProjectMatrix();
 
 		Vector3 getPosition();
+		Vector3 getRotation();
 		Matrix4* getViewMatrix();
 		Matrix4* getProjectionMatrix();
 	private:
@@ -30,6 +36,8 @@ namespace Rr
 		float aspect;
 		float FOV;
 
+		Vector3 position;
+		Vector3 rotation;
 		Matrix4 viewMatrix;
 		Matrix4 projectionMatrix;
 	};
